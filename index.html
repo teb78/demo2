@@ -34,7 +34,7 @@
     var map = L.map('map', {
       zoomControl: false, // Add zoom control separately below
       center: [-38.5,-62.5], // Initial map center
-      zoom: 13, // Initial zoom level
+      zoom: 10, // Initial zoom level
       attributionControl: false, // Instead of default attribution, we add custom at the bottom of script
       scrollWheelZoom: true
     })
@@ -71,7 +71,7 @@
       // Add all points into a heat layer
       var heat = L.heatLayer(data, {
         radius: 35,
-        blur: 15
+        blur: 5
       })
   
       // Add the heatlayer to the map
