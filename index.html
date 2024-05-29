@@ -23,6 +23,75 @@
   <div id="map" class="vh-100 vw-100 bg-near-white"></div>
 
   <div id="legend" class="bg-white fixed top-0 left-0 pa2 mt2 ml2 br1 o-90" style="z-index: 999; width: 380px">
+    <h1 class="f3 mt0">POIs Heatmap DEMO</h1>
+
+    <p class="measure mb1">Este heatmap muestra densidad de restaurantes, bares y cafés en Manhattan según extracciones marzo 2024. La intensidad de cada punto de datos está mapeada a la popularidad del local.</p>
+
+  </div>
+
+  <script>
+
+    var map = L.map('map', {
+      zoomControl: false, // Add zoom control separately below
+      center: [40.749,-73.988], // Initial map center
+      zoom: 13, // Initial zoom level
+      attributionControl: false, // Instead of default attribution, we add custom at the bottom of script
+      scrollWheelZoom: true
+    })
+
+    // Add zoom in/out buttons to the top-right
+    L.control.zoom({position: 'topright'}).addTo(map)
+
+    // Add baselayer
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map)
+
+    // Add geographical labels only layer on top of baselayer
+    var labels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+      pane: 'shadowPane'  // always display on top
+    }).addTo(map)
+
+    // Read data from CSV file
+    $.get('./data.csv', function(csvString) {
+  
+      // Use PapaParse to transform file into arrays
+      var data = Papa.parse(csvString.trim()).data.filter(function(row) { 
+        return row.length === 3;
+      }).map(function(row) {
+        // Parse each row into an array with latitude, longitude, and weight as numbers
+        return [parseFloat(row[0]), parseFloat(row[1]), parseFloat(row[2])];
+      });
+  
+      // Add all points into a heat layer
+      var heat = L.heatLayer(data, {
+        radius: 35,
+        blur: 15
+      })
+  
+      // Add the heatlayer to the map
+      heat.addTo(map)
+    })
+
+    // Add custom attribution
+    L.control.attribution({
+      prefix: '<a href="https://github.com/HandsOnDataViz/leaflet-heatmap">008 ## View data and code</a> \
+        by <a href="https://handsondataviz.org" target="_blank">HandsOnDataViz</a>'
+    }).addTo(map)
+
+
+  </script>
+
+</body>
+
+</html>
+
+  <div id="legend" class="bg-white fixed top-0 left-0 pa2 mt2 ml2 br1 o-90" style="z-index: 999; width: 380px">
     <h1 class="f3 mt0">Moderno SUR</h1>
 
     <p class="measure mb1">...</p>
